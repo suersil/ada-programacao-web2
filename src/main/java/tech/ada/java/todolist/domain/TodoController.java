@@ -1,7 +1,11 @@
 package tech.ada.java.todolist.domain;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 //Todo controller precisa de um repositorio (repository)
 
@@ -14,17 +18,26 @@ public class TodoController {
     private final TodoItemRepository todoItemRepository;  //final - constante, porque ele só é instanciado no construtor, e só acontece 1x.
 
     //Construtor
-    public TodoController (TodoItemRepository todoItemRepository){
+    public TodoController(TodoItemRepository todoItemRepository) {
         this.todoItemRepository = todoItemRepository;  //this - da classe e nao do parametro (mesmo nome)
     }
 
-    @GetMapping("/todo-item")  //() - caminho de acesso
-    //Metodo to sett o Titulo
-    public void inserirTodoItem() {
-        TodoItem todoItem = new TodoItem();
-        todoItem.setTitulo("Fazer Cafe");
-        todoItem.setConcluida(true);
+    @PostMapping("/todo-item")  //() - caminho de acesso
+    public TodoItem cadastrarItem(@RequestBody TodoItemRequest request) {
 
-        todoItemRepository.save(todoItem);
+        TodoItem todoItemConvertido = new TodoItem();   //convertendo minha Request em uma TodoItem (para poder ser usado dentro do save):
+        todoItemConvertido.setTitulo(request.titulo());
+        todoItemConvertido.setDescricao(request.descricao());
+        todoItemConvertido.setPrazoFinal(request.prazoFinal());
+
+        TodoItem novoTodoItem = todoItemRepository.save(todoItemConvertido);
+        return novoTodoItem;
+    }
+    @GetMapping ("/todo-item")
+    public List<TodoItem> buscarTodos() {
+        return todoItemRepository.findAll();
     }
 }
+
+
+
