@@ -20,20 +20,23 @@ public class TodoItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //para se auto-encrementar como valor único
     private Long id;
-
     private String titulo;
-
     private String descricao;
-
     private boolean concluida;
-
-    private LocalDateTime dataHoraCriacao;
-
+    private LocalDateTime dataHora;
     private LocalDate prazoFinal;
 
     public TodoItem(){
-//        dataHora = LocalDateTime.now();
+        this.concluida = false;
+        this.dataHora = LocalDateTime.now();
     }
 
+    public TodoItem (String titulo, String descricao, LocalDate prazoFinal){
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.prazoFinal = prazoFinal;
+        this.concluida = false;
+        this.dataHora = LocalDateTime.now();
+    }
 
 }
