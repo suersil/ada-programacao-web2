@@ -83,27 +83,31 @@ public class TodoController {
         }
     }
 
+    //Nesse caso não queremos criar, apenas atualizar.
     @PutMapping("/todo-item/{id}")
     public ResponseEntity<TodoItem> atualizarTodos
             (@PathVariable Long id, @RequestBody AtualizarTodosRequest request) throws Exception {
-
+        //Todos usa o @RequestBody menos o GET
         // Buscamos pelo metodo findById que retorna um Optional<TodoItem> pois o mesmo pode nao existir no banco
         Optional<TodoItem> optionalTodoItem = todoItemRepository.findById(id);
 
         // Verificamos se existe valor dentro do Optional
         if (optionalTodoItem.isPresent()) {
             // Se existir vamos fazer o get() para tirar o valor de dentro do optional
-            TodoItem todoItemModificado = optionalTodoItem.get();
+            TodoItem todoItemExistente = optionalTodoItem.get();
 
-            todoItemModificado.setConcluida(request.status());
-            todoItemModificado.setTitulo(request.titulo());
-            todoItemModificado.setDescricao(request.descricao());
-            todoItemModificado.setPrazoFinal(request.prazoFinal());
+            todoItemExistente.setConcluida(request.status());
+            todoItemExistente.setTitulo(request.titulo());
+            todoItemExistente.setDescricao(request.descricao());
+            todoItemExistente.setPrazoFinal(request.prazoFinal());
+            todoItemExistente.setDataHora(request.dataHora());   // ou LocalDateTimeNow() = Now
 
-            TodoItem todoItemSalvo = todoItemRepository.save(todoItemModificado);
+            TodoItem todoItemSalvo = todoItemRepository.save(todoItemExistente);
+
             return ResponseEntity.ok(todoItemSalvo);
         }
-        return null;
+        return null ; //Eu não quis implementar o "Else"
+
     }
 
 }
