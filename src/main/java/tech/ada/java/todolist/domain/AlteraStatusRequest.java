@@ -1,4 +1,8 @@
 package tech.ada.java.todolist.domain;
 
-public record AlteraStatusRequest(Boolean status, String titulo, String descricao) {
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+public record AlteraStatusRequest(Boolean status, String titulo, String descricao)
+{
 }
