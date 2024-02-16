@@ -96,7 +96,7 @@ public class TodoController {
             // Se existir vamos fazer o get() para tirar o valor de dentro do optional
             TodoItem todoItemExistente = optionalTodoItem.get();
 
-            todoItemExistente.setConcluida(request.status());
+            todoItemExistente.setConcluida(request.concluida());
             todoItemExistente.setTitulo(request.titulo());
             todoItemExistente.setDescricao(request.descricao());
             todoItemExistente.setPrazoFinal(request.prazoFinal());
@@ -107,6 +107,10 @@ public class TodoController {
             return ResponseEntity.ok(todoItemSalvo);
         }
         return null ; //Eu não quis implementar o "Else"
+
+//     else {
+//        return ResponseEntity.notFound().build();
+//    }
 
     }
 

@@ -24,11 +24,13 @@ public class TodoItem {
     private String descricao;
     private boolean concluida;
     private LocalDateTime dataHora;
+    private LocalDateTime dataHoraAtualizacao;
     private LocalDate prazoFinal;
 
     public TodoItem(){
         this.concluida = false;
         this.dataHora = LocalDateTime.now();
+        this.dataHoraAtualizacao = LocalDateTime.now();
     }
 
     public TodoItem (String titulo, String descricao, LocalDate prazoFinal){
@@ -37,6 +39,7 @@ public class TodoItem {
         this.prazoFinal = prazoFinal;
         this.concluida = false;
         this.dataHora = LocalDateTime.now();
+        this.dataHoraAtualizacao = LocalDateTime.now();
     }
 
 }
