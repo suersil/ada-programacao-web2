@@ -8,7 +8,6 @@ public record AtualizarTodosRequest(
         String titulo,
         String descricao,
         Boolean concluida,
-        LocalDateTime dataHora,
         LocalDate prazoFinal
 ) {
 
@@ -16,12 +15,14 @@ public record AtualizarTodosRequest(
 
     //Construtor
     public AtualizarTodosRequest
-            (String titulo, String descricao, Boolean concluida, LocalDateTime dataHora, LocalDate prazoFinal) {
+            (String titulo, String descricao, Boolean concluida, LocalDate prazoFinal) {
+
         this.titulo = Objects.requireNonNull(titulo, "Titulo é obrigatorio"); //Opcao com Mensagem
-        this.descricao = Objects.requireNonNull(descricao);
-        this.concluida = Objects.requireNonNull(concluida);
-        this.dataHora = Objects.requireNonNull(dataHora);
-        this.prazoFinal = Objects.requireNonNull(prazoFinal);
+        this.descricao = Objects.requireNonNull(descricao, "Descrição obrigatoria");
+        this.concluida = Objects.requireNonNull(concluida, "Concluida é obrigatoria");
+        this.prazoFinal = Objects.requireNonNull(prazoFinal, "Necessario prazo final");
+//        this.dataHora = Objects.requireNonNull(dataHora);
+
     }
 
     /*    public <T>T myNotNull(T objeto) {

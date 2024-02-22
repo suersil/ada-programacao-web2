@@ -33,11 +33,11 @@ public class TodoController {
     public ResponseEntity<TodoItem> cadastrarItem(@RequestBody TodoItemRequest request) {
         //Vamos converter a request "TodoItemRequest" que chegou no body para uma entidade "TodoItem" atraves a funcao que criamos toEntity
         //TodoItem todoItemConvertido = request.toEntity();
-        System.out.println("");
-        System.out.println("######## Debug Suelen");
-        System.out.println("titulo:" + request.getTitulo());
-        System.out.println("descricao:" + request.getDescricao());
-        System.out.println("prazoFinal:" + request.getPrazoFinal());
+//        System.out.println("");
+//        System.out.println("######## Debug Suelen");
+//        System.out.println("titulo:" + request.getTitulo());
+//        System.out.println("descricao:" + request.getDescricao());
+//        System.out.println("prazoFinal:" + request.getPrazoFinal());
 
         //Vamos converter a request "TodoItemRequest" que chegou no body para uma entidade "TodoItem" atraves do componente model mapper
         TodoItem todoItemConvertido = modelMapper.map(request, TodoItem.class);
@@ -53,6 +53,14 @@ public class TodoController {
     public List<TodoItem> buscarTodos() {
         List<TodoItem> listaComTodos = todoItemRepository.findAll();
         return listaComTodos;
+    }
+
+    //Fazendo uma requisição pelo Query usando @RequestParam
+    @GetMapping(value= "/todo-item", params = {"titulo"})
+    public List<TodoItem> buscarPorFiltro(@RequestParam String titulo){
+        String tituloSemEspacos = titulo.replaceAll("\\s", ""); //para ignorar espaços entre as palavras
+
+        return todoItemRepository.findByTitulo(titulo);
     }
 
     //Criamos uma nova rota para atualizar partes especificas do nosso recurso /todo-item
@@ -76,37 +84,39 @@ public class TodoController {
             //Depois de atualizar o que precisamos, vamos salvar
             TodoItem todoItemSalvo = todoItemRepository.save(todoItemModificado);
             return ResponseEntity.ok(todoItemSalvo);
-
-        } else {
-            // Caso nao encontramos na valor no Optional retornamos o codigo 404 - nao encontrado
-            return ResponseEntity.notFound().build();
         }
+
+        // Caso nao encontramos na valor no Optional retornamos o codigo 404 - nao encontrado
+        return ResponseEntity.notFound().build();
     }
 
     //Nesse caso não queremos criar, apenas atualizar.
     @PutMapping("/todo-item/{id}")
     public ResponseEntity<TodoItem> atualizarTodos
             (@PathVariable Long id, @RequestBody AtualizarTodosRequest request) throws Exception {
+        System.out.println("PUT /todo-item/{id}");
         //Todos usa o @RequestBody menos o GET
         // Buscamos pelo metodo findById que retorna um Optional<TodoItem> pois o mesmo pode nao existir no banco
         Optional<TodoItem> optionalTodoItem = todoItemRepository.findById(id);
 
-        // Verificamos se existe valor dentro do Optional
-        if (optionalTodoItem.isPresent()) {
-            // Se existir vamos fazer o get() para tirar o valor de dentro do optional
-            TodoItem todoItemExistente = optionalTodoItem.get();
-
-            todoItemExistente.setConcluida(request.concluida());
-            todoItemExistente.setTitulo(request.titulo());
-            todoItemExistente.setDescricao(request.descricao());
-            todoItemExistente.setPrazoFinal(request.prazoFinal());
-            todoItemExistente.setDataHora(request.dataHora());   // ou LocalDateTimeNow() = Now
-
-            TodoItem todoItemSalvo = todoItemRepository.save(todoItemExistente);
-
-            return ResponseEntity.ok(todoItemSalvo);
+        //Primeiro checar se NAO esta vazio - se existe os valores dentro do banco podemos atualizar/editar em baixo:
+        if (optionalTodoItem.isEmpty()) {
+            return ResponseEntity.notFound().build(); //Eu não quis implementar o "Else"
         }
-        return null ; //Eu não quis implementar o "Else"
+
+        // Se existir vamos fazer o get()-ID para tirar o valor de dentro do optional
+        TodoItem todoItemExistente = optionalTodoItem.get();
+
+        todoItemExistente.setConcluida(request.concluida());
+        todoItemExistente.setTitulo(request.titulo());
+        todoItemExistente.setDescricao(request.descricao());
+        todoItemExistente.setPrazoFinal(request.prazoFinal());
+       // todoItemExistente.setDataHora(request.dataHora());   // ou LocalDateTimeNow() = Now
+
+        TodoItem todoItemSalvo = todoItemRepository.save(todoItemExistente);
+
+        return ResponseEntity.ok(todoItemSalvo);
+
 
 //     else {
 //        return ResponseEntity.notFound().build();
